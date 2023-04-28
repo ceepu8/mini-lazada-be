@@ -1,0 +1,5 @@
+1. mongoose "discriminators"
+https://dev.to/helenasometimes/getting-started-with-mongoose-discriminators-in-expressjs--22m9
+
+2. module alias
+https://www.geeksforgeeks.org/how-to-have-path-alias-in-node-js/
