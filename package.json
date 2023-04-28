@@ -10,9 +10,9 @@
   "_moduleAliases": {
     "@root": ".",
     "@routes": "./routes",
-    "@deep": "src/some/deep/directory/or/file",
-    "@my_module": "lib/some-file.js",
-    "something": "src/foo"
+    "@models": "./models",
+    "@controller": "./controller",
+    "@constants": "./constants"
   },
   "_moduleDirectories": [
     "node_modules_custom"

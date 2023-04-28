@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const UserSchema = require('./User');
 
 const { Schema } = mongoose;
 
@@ -9,4 +10,6 @@ const ShipperSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('shippers', ShipperSchema);
+const Shipper = UserSchema.discriminator('shipper', ShipperSchema);
+
+module.exports = { Shipper };

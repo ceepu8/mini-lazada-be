@@ -1,10 +1,9 @@
 const express = require('express');
-
 const userRouter = express.Router();
 
-userRouter.get('/', async (res) => {
-  console.log('user router');
-  res.status(200);
-});
+userRouter.get('/');
+userRouter.get('/:id');
+userRouter.put('/:id');
+userRouter.delete('/:id');
 
 module.exports = userRouter;
