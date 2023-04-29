@@ -3,3 +3,6 @@ https://dev.to/helenasometimes/getting-started-with-mongoose-discriminators-in-e
 
 2. module alias
 https://www.geeksforgeeks.org/how-to-have-path-alias-in-node-js/
+
+3. setup eslint and prettier
+https://sourcelevel.io/blog/how-to-setup-eslint-and-prettier-on-node 

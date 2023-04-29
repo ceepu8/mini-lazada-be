@@ -1,0 +1,33 @@
+POST http://localhost:3001/api/auth/register
+Content-Type: application/json
+
+{
+    "username": "uyencao",
+    "password": "0909876987",
+    "role": "customer",
+    "name": "uyen cao",
+    "address": "XYZ street"
+}
+
+###
+POST http://localhost:3001/api/auth/register
+Content-Type: application/json
+
+{
+    "username": "uyencaobusiness",
+    "password": "123123123",
+    "role": "vendor",
+    "businessName": "uyen cao business",
+    "businessAddress": "Business street"
+}
+
+###
+POST http://localhost:3001/api/auth/register
+Content-Type: application/json
+
+{
+    "username": "uyencaoshipper",
+    "password": "123123123",
+    "role": "shipper",
+    "hub": "ABC Hub"
+}
