@@ -6,3 +6,6 @@ https://www.geeksforgeeks.org/how-to-have-path-alias-in-node-js/
 
 3. setup eslint and prettier
 https://sourcelevel.io/blog/how-to-setup-eslint-and-prettier-on-node 
+
+4. hosting - render
+https://geshan.com.np/blog/2021/01/free-nodejs-hosting/
