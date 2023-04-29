@@ -29,5 +29,14 @@ Content-Type: application/json
     "username": "uyencaoshipper",
     "password": "123123123",
     "role": "shipper",
-    "hub": "ABC Hub"
+    "hub": "644d5bec0c7cd5f48a9eee74"
+}
+
+###
+POST http://localhost:3001/api/hub
+Content-Type: application/json
+
+{
+    "name": "DECA Hub",
+    "address": "DECA Street"
 }
