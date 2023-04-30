@@ -16,3 +16,6 @@ https://stackoverflow.com/questions/51146152/mongodb-nodejs-driver-deprecationwa
 
 6. setting env
 https://viblo.asia/p/lam-viec-voi-environment-variables-trong-nodejs-maGK7ONeKj2
+
+7. remove files and setup gitignore
+https://stackoverflow.com/questions/26189082/track-file-inside-ignored-directory
