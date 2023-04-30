@@ -22,6 +22,7 @@ const registerUser = async (req, res) => {
           username,
           password: hashedPassword,
           role,
+          profileImage: '',
           address,
           name,
         });
@@ -62,6 +63,7 @@ const registerUser = async (req, res) => {
           username: vendorUsername,
           password: hashedPassword,
           role: vendorRole,
+          profileImage: '',
           businessName,
           businessAddress,
         });
@@ -100,6 +102,7 @@ const registerUser = async (req, res) => {
         const newShipper = new Shipper({
           username: shipperUsername,
           password: hashedPassword,
+          profileImage: '',
           role: shipperRole,
           hub,
         });

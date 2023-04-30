@@ -38,7 +38,7 @@ const uploadProductImage = async (req, res) => {
   }
 };
 
-const getProductImage = async (req, res) => {
+const getImage = async (req, res) => {
   try {
     await mongoClient.connect();
 
@@ -66,4 +66,4 @@ const getProductImage = async (req, res) => {
   }
 };
 
-module.exports = { getProductImage, uploadProductImage };
+module.exports = { getImage, uploadProductImage };
