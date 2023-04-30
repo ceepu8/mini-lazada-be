@@ -22,6 +22,7 @@ const registerUser = async (req, res) => {
           username,
           password: hashedPassword,
           role,
+          profileImage: '',
           address,
           name,
         });
@@ -62,6 +63,7 @@ const registerUser = async (req, res) => {
           username: vendorUsername,
           password: hashedPassword,
           role: vendorRole,
+          profileImage: '',
           businessName,
           businessAddress,
         });
@@ -100,6 +102,7 @@ const registerUser = async (req, res) => {
         const newShipper = new Shipper({
           username: shipperUsername,
           password: hashedPassword,
+          profileImage: '',
           role: shipperRole,
           hub,
         });
@@ -146,7 +149,8 @@ const loginUser = async (req, res) => {
         message: 'Invalid username/ email or password',
       });
     }
-    const payload = { data: { username, role: user.role } };
+    console.log(user._id);
+    const payload = { data: { userId: user._id, username, role: user.role } };
     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: 10 * 60 * 60,
     });
