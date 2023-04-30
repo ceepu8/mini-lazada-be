@@ -62,3 +62,18 @@ Content-Type: application/json
     "username": "uyencaoshipper",
     "password": "123123123"
 }
+
+
+###
+
+POST http://localhost:3001/api/product
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoidXllbmNhb2J1c2luZXNzIiwicm9sZSI6InZlbmRvciJ9LCJpYXQiOjE2ODI4NDY2MTcsImV4cCI6MTY4Mjg4MjYxN30.4dyzjVKMShZGEUonm9E487bWWzsg5AjWvJGCWyBN54A
+
+{
+    "name": "product 1",
+    "price": 21,
+    "description": "a good product",
+    "image": "",
+    "vendor": "644d57fe01305b12227fba09"
+}
