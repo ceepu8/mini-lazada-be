@@ -1,27 +1,15 @@
 const dbConfig = require('../config/dbConfig');
 
-const MongoClient = require('mongodb').MongoClient;
-const mongoose = require('mongoose');
-
 const Product = require('../models/Product');
+const MongoClient = require('mongodb').MongoClient;
+const GridFSBucket = require('mongodb').GridFSBucket;
 
 const mongoURI = dbConfig.url;
-const conn = mongoose.createConnection(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-let gfs;
-conn.once('open', () => {
-  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: dbConfig.imgBucket,
-  });
-});
+const mongoClient = new MongoClient(mongoURI);
 
 const uploadFilesMiddleware = require('../middlewares/uploadFile');
 
-const mongoClient = new MongoClient(mongoURI);
-
-const baseUrl = 'http://localhost:3001/api/product/image';
+const baseUrl = 'http://localhost:3001/api/product/image/';
 
 const uploadProductImage = async (req, res) => {
   const { id } = req.params;
@@ -51,21 +39,31 @@ const uploadProductImage = async (req, res) => {
 };
 
 const getProductImage = async (req, res) => {
-  gfs.find({ filename: req.params.filename }).toArray((err, file) => {
-    //Check if file
+  try {
+    await mongoClient.connect();
 
-    if (!file || file.length == 0) {
-      return res.status(404).json({ success: false, message: 'No files exist' });
-    }
+    const database = mongoClient.db(dbConfig.database);
+    const bucket = new GridFSBucket(database, {
+      bucketName: dbConfig.imgBucket,
+    });
 
-    //Check if image
-    if (file[0].contentType === 'image/jpeg' || file.contentType === 'image/png') {
-      // Read output to browser
-      gfs.openDownloadStreamByName(req.params.filename).pipe(res);
-    } else {
-      res.status(404).json({ success: false, message: 'Not an image' });
-    }
-  });
+    let downloadStream = bucket.openDownloadStreamByName(req.params.filename);
+    downloadStream.on('data', function (data) {
+      return res.status(200).write(data);
+    });
+
+    downloadStream.on('error', function (err) {
+      return res.status(404).send({ message: 'Cannot download the Image!' });
+    });
+
+    downloadStream.on('end', () => {
+      return res.end();
+    });
+  } catch (error) {
+    return res.status(500).send({
+      message: error.message,
+    });
+  }
 };
 
 module.exports = { getProductImage, uploadProductImage };

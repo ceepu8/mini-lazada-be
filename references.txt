@@ -9,3 +9,7 @@ https://sourcelevel.io/blog/how-to-setup-eslint-and-prettier-on-node
 
 4. hosting - render
 https://geshan.com.np/blog/2021/01/free-nodejs-hosting/
+
+5. upload files
+https://www.bezkoder.com/node-js-upload-store-images-mongodb/
+https://stackoverflow.com/questions/51146152/mongodb-nodejs-driver-deprecationwarning-collection-count-is-deprecated
