@@ -1,6 +1,8 @@
 require('dotenv').config();
 const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
+const User = require('../models/User');
 const { Customer } = require('../models/Customer');
 const { Shipper } = require('../models/Shipper');
 const { Vendor } = require('../models/Vendor');
@@ -123,4 +125,72 @@ const registerUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser };
+const loginUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid username/ email or password',
+      });
+    }
+
+    const isAuth = bcryptjs.compareSync(password, user.password);
+
+    if (!isAuth) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid username/ email or password',
+      });
+    }
+    const payload = { data: { username } };
+    const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: 3600,
+    });
+
+    let userPayload = {};
+
+    if (user.role === 'customer') {
+      userPayload = {
+        username: user.username,
+        role: user.role,
+        name: user.name,
+        address: user.address,
+      };
+    } else if (user.role === 'vendor') {
+      userPayload = {
+        username: user.username,
+        role: user.role,
+        businessName: user.businessName,
+        businessAddress: user.businessAddress,
+      };
+    } else if (user.role === 'shipper') {
+      const shipper = await user.populate('hub');
+      userPayload = {
+        username: shipper.username,
+        role: shipper.role,
+        hub: {
+          name: shipper.hub.name,
+          address: shipper.hub.address,
+        },
+      };
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'User logged in successfully!',
+      accessToken,
+      user: {
+        ...userPayload,
+      },
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+module.exports = { registerUser, loginUser };
