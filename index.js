@@ -4,6 +4,7 @@ require('module-alias/register');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+var bodyParser = require('body-parser');
 
 const rootRouter = require('@routes/root');
 
@@ -29,6 +30,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api', rootRouter);
 
 app.listen(PORT, () => {
