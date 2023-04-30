@@ -146,9 +146,9 @@ const loginUser = async (req, res) => {
         message: 'Invalid username/ email or password',
       });
     }
-    const payload = { data: { username } };
+    const payload = { data: { username, role: user.role } };
     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: 3600,
+      expiresIn: 10 * 60 * 60,
     });
 
     let userPayload = {};

@@ -9,3 +9,13 @@ https://sourcelevel.io/blog/how-to-setup-eslint-and-prettier-on-node
 
 4. hosting - render
 https://geshan.com.np/blog/2021/01/free-nodejs-hosting/
+
+5. upload files
+https://www.bezkoder.com/node-js-upload-store-images-mongodb/
+https://stackoverflow.com/questions/51146152/mongodb-nodejs-driver-deprecationwarning-collection-count-is-deprecated
+
+6. setting env
+https://viblo.asia/p/lam-viec-voi-environment-variables-trong-nodejs-maGK7ONeKj2
+
+7. remove files and setup gitignore
+https://stackoverflow.com/questions/26189082/track-file-inside-ignored-directory
