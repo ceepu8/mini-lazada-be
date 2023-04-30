@@ -10,6 +10,18 @@ Content-Type: application/json
 }
 
 ###
+POST https://smoky-mini-lazada-be.onrender.com/api/auth/register
+Content-Type: application/json
+
+{
+    "username": "uyencaowithrender",
+    "password": "123123",
+    "role": "customer",
+    "name": "uyen cao with render",
+    "address": "RENDER street"
+}
+
+###
 POST http://localhost:3001/api/auth/register
 Content-Type: application/json
 
@@ -39,4 +51,14 @@ Content-Type: application/json
 {
     "name": "DECA Hub",
     "address": "DECA Street"
+}
+
+###
+
+POST http://localhost:3001/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "uyencaoshipper",
+    "password": "123123123"
 }
