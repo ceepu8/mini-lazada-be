@@ -97,4 +97,49 @@ const getOrderById = async (req, res) => {
   }
 };
 
-module.exports = { createOrder, getOrderById };
+const getOrder = async (req, res) => {
+  const {
+    data: { userId },
+  } = req.tokenDecode;
+
+  try {
+    const user = await User.findById(userId).populate('hub');
+
+    const ordersByHub = await Order.find({ hub: user.hub._id }).populate([
+      'customer',
+      'hub',
+      'products.productID',
+    ]);
+
+    const resOrder = ordersByHub.map((order) => ({
+      customer: {
+        name: order.customer.name,
+        address: order.customer.address,
+      },
+      product: order.products.map((prod) => ({
+        name: prod.productID.name,
+        image: prod.productID.image,
+        price: prod.productID.price,
+        name: prod.quantity,
+      })),
+      totalPrice: order.totalPrice,
+    }));
+
+    return res.status(200).json({
+      success: true,
+      message: 'Order created successfully!',
+      order: {
+        hub: {
+          name: user.hub.name,
+          address: user.hub.address,
+        },
+        order: resOrder,
+      },
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+module.exports = { createOrder, getOrderById, getOrder };
