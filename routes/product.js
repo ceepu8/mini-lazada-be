@@ -1,5 +1,4 @@
 const express = require('express');
-const multer = require('multer');
 const { uploadProductImage, getImage } = require('../controller/upload');
 const { createProduct, getProductById, getAllProducts } = require('../controller/product');
 const { authorize, verifyToken } = require('../middlewares/verifyToken');
