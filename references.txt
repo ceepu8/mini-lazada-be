@@ -19,3 +19,11 @@ https://viblo.asia/p/lam-viec-voi-environment-variables-trong-nodejs-maGK7ONeKj2
 
 7. remove files and setup gitignore
 https://stackoverflow.com/questions/26189082/track-file-inside-ignored-directory
+
+8. filter product with express
+https://mongoosejs.com/docs/api/model.html#Model.find()
+
+$gt: greater than
+$lt: less than
+$lte: less than or equal to
+$ne: not equal to
