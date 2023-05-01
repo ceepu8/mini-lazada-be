@@ -1,4 +1,5 @@
 const Order = require('../models/Order');
+const User = require('../models/User');
 
 const createOrder = async (req, res) => {
   const {
@@ -16,7 +17,6 @@ const createOrder = async (req, res) => {
     });
 
     await newOrder.save();
-
     const order = await newOrder.populate(['customer', 'hub', 'products.productID']);
 
     const resProd = order.products.map((prod) => ({
@@ -47,4 +47,54 @@ const createOrder = async (req, res) => {
   }
 };
 
-module.exports = { createOrder };
+const getOrderById = async (req, res) => {
+  const {
+    data: { userId },
+  } = req.tokenDecode;
+  const { id: orderId } = req.params;
+
+  try {
+    const user = await User.findById(userId).populate('hub');
+    const order = await Order.findById(orderId).populate(['customer', 'hub', 'products.productID']);
+
+    if (user.role === 'shipper') {
+      if (user.hub.name !== order.hub.name) {
+        return res
+          .status(403)
+          .json({ success: false, message: 'Not allow to access this order information' });
+      }
+    } else if (user.role === 'customer') {
+      if (userId != order.customer._id) {
+        return res.status(401).json({ success: false, message: 'You do not own this order' });
+      }
+    }
+
+    const resProd = order.products.map((prod) => ({
+      name: prod.productID.name,
+      price: prod.productID.price,
+      image: prod.productID.image,
+      quantity: prod.quantity,
+    }));
+    return res.status(200).json({
+      success: true,
+      message: 'Order created successfully!',
+      order: {
+        customer: {
+          name: order.customer.name,
+          address: order.customer.address,
+        },
+        products: [...resProd],
+      },
+      hub: {
+        name: order.hub.name,
+        address: order.hub.address,
+      },
+      totalPrice: order.totalPrice,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+module.exports = { createOrder, getOrderById };
