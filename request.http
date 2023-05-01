@@ -77,3 +77,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuY
     "image": "",
     "vendor": "644d57fe01305b12227fba09"
 }
+
+###
+
+GET http://localhost:3001/api/product/644eb4e9f585f1ffe135ee55
+Content-Type: application/json
