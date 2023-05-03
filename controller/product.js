@@ -87,7 +87,6 @@ const getProductById = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   const { min, max } = req.query || {};
-  const { vendor } = req.query;
 
   let priceCondition = {};
   if (min && max && min >= 0 && max >= 0) {
@@ -97,7 +96,7 @@ const getAllProducts = async (req, res) => {
   }
 
   try {
-    let products = await Product.find({ ...priceCondition, ...filterByVendor }).populate('vendor');
+    let products = await Product.find({ ...priceCondition }).populate('vendor');
     products = products.map((prod) => ({
       id: prod._id,
       name: prod.name,
