@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const uploadFilesMiddleware = require('../middlewares/uploadFile');
 const Product = require('../models/Product');
+const User = require('../models/User');
 
 const baseUrl = process.env.HOST_URL + '/api/product/image/';
 
@@ -85,7 +86,8 @@ const getProductById = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
-  const { min = 0, max = 0 } = req.query || {};
+  const { min, max } = req.query || {};
+  const { vendor } = req.query;
 
   let priceCondition = {};
   if (min && max && min >= 0 && max >= 0) {
@@ -95,7 +97,7 @@ const getAllProducts = async (req, res) => {
   }
 
   try {
-    let products = await Product.find({ ...priceCondition }).populate('vendor');
+    let products = await Product.find({ ...priceCondition, ...filterByVendor }).populate('vendor');
     products = products.map((prod) => ({
       id: prod._id,
       name: prod.name,
@@ -118,6 +120,41 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+const getMyProducts = async (req, res) => {
+  const {
+    data: { userId },
+  } = req.tokenDecode;
+
+  try {
+    let vendor = await User.findById(userId).select('-password');
+
+    if (vendor.role === 'vendor') {
+      let products = await Product.find({ vendor: vendor._id }).populate('vendor');
+      products = products.map((prod) => ({
+        id: prod._id,
+        name: prod.name,
+        price: prod.price,
+        description: prod.description,
+        image: prod.image,
+        vendor: {
+          businessName: prod.vendor.businessName,
+          businessAddress: prod.vendor.businessAddress,
+        },
+      }));
+      if (products.length > 0) {
+        return res.status(200).json({ success: true, message: 'Success', products });
+      } else {
+        return res.status(404).json({ success: true, message: 'There is not any products' });
+      }
+    } else {
+      return res.status(404).json({ success: true, message: 'You are unauthorized' });
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
 const getProductPrice = async (req, res) => {};
 
-module.exports = { createProduct, getProductById, getAllProducts, getProductPrice };
+module.exports = { createProduct, getProductById, getAllProducts, getProductPrice, getMyProducts };
