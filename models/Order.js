@@ -28,6 +28,11 @@ const OrderSchema = new Schema({
     type: Number,
     required: true,
   },
+  status: {
+    type: String,
+    required: true,
+    enum: ['active', 'delivered', 'canceled'],
+  },
 });
 
 module.exports = mongoose.model('orders', OrderSchema);
