@@ -14,6 +14,7 @@ const createOrder = async (req, res) => {
       products,
       hub,
       totalPrice,
+      status: 'active',
     });
 
     await newOrder.save();
@@ -142,4 +143,70 @@ const getOrder = async (req, res) => {
   }
 };
 
-module.exports = { createOrder, getOrderById, getOrder };
+const updateOrderStatus = async (req, res) => {
+  const {
+    data: { userId },
+  } = req.tokenDecode;
+  const { status } = req.query;
+  const { id } = req.params;
+
+  const isStatusValid =
+    ['active', 'delivered', 'canceled'].findIndex((each) => {
+      return each == status;
+    }) > -1;
+
+  if (!isStatusValid) {
+    return res.status(404).json({
+      status: 404,
+      success: false,
+      message: 'Status changed invalid',
+    });
+  }
+
+  if (!status) {
+    return res.status(404).json({
+      status: 404,
+      success: false,
+      message: 'There is no status changed',
+    });
+  }
+
+  try {
+    const shipper = await User.findById(userId).populate('hub');
+    const order = await Order.findById(id).populate('hub');
+
+    if (shipper.hub.id !== order.hub.id) {
+      return res.status(403).json({
+        status: 403,
+        success: false,
+        message: "You are not allowed to change status of other hub's order",
+      });
+    }
+
+    const updatingOrder = await Order.findByIdAndUpdate(id, {
+      status,
+    });
+
+    if (!updatingOrder) {
+      return res.status(404).json({
+        status: 404,
+        success: false,
+        message: 'There is no product',
+      });
+    }
+
+    const updatedOrder = await Order.findById(id);
+
+    return res.status(200).json({
+      status: 200,
+      success: true,
+      message: 'Update order status successfully!',
+      data: updatedOrder,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+module.exports = { createOrder, getOrderById, getOrder, updateOrderStatus };
