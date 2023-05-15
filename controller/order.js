@@ -76,6 +76,7 @@ const getOrderById = async (req, res) => {
       image: prod.productID.image,
       quantity: prod.quantity,
     }));
+
     return res.status(200).json({
       success: true,
       message: 'Order created successfully!',
@@ -85,8 +86,9 @@ const getOrderById = async (req, res) => {
             name: order.customer.name,
             address: order.customer.address,
           },
-          totalPrice: order.totalPrice,
           products: [...resProd],
+          totalPrice: order.totalPrice,
+          status: order.status,
         },
         hub: {
           name: order.hub.name,
