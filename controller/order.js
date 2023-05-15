@@ -121,9 +121,10 @@ const getOrder = async (req, res) => {
         name: prod.productID.name,
         image: prod.productID.image,
         price: prod.productID.price,
-        name: prod.quantity,
+        quantity: prod.quantity,
       })),
       totalPrice: order.totalPrice,
+      status: order.status,
     }));
 
     return res.status(200).json({

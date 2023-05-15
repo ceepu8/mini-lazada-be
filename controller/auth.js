@@ -160,8 +160,6 @@ const loginUser = async (req, res) => {
       profileImage: user.profileImage,
     };
 
-    console.log(userPayload);
-
     if (user.role === 'customer') {
       userPayload.name = user.name;
       userPayload.address = user.address;
