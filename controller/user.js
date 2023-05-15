@@ -5,7 +5,7 @@ const User = require('../models/User');
 const baseUrl = process.env.HOST_URL + '/api/user/image/';
 
 const uploadUserImage = async (req, res) => {
-  const { data: { userId } } = req.params
+  const { data: { userId } } = req.tokenDecode
   try {
     await uploadFilesMiddleware(req, res);
 
