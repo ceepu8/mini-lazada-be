@@ -123,6 +123,7 @@ const getOrder = async (req, res) => {
         price: prod.productID.price,
         quantity: prod.quantity,
       })),
+      id: order.id,
       totalPrice: order.totalPrice,
       status: order.status,
     }));
