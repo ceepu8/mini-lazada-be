@@ -79,18 +79,20 @@ const getOrderById = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: 'Order created successfully!',
-      order: {
-        customer: {
-          name: order.customer.name,
-          address: order.customer.address,
+      data: {
+        order: {
+          customer: {
+            name: order.customer.name,
+            address: order.customer.address,
+          },
+          totalPrice: order.totalPrice,
+          products: [...resProd],
         },
-        products: [...resProd],
+        hub: {
+          name: order.hub.name,
+          address: order.hub.address,
+        },
       },
-      hub: {
-        name: order.hub.name,
-        address: order.hub.address,
-      },
-      totalPrice: order.totalPrice,
     });
   } catch (error) {
     console.log(error.message);
