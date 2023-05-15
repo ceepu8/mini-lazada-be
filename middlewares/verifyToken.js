@@ -18,6 +18,28 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
+const authenticateWithTokenOnly = async (req, res, next) => {
+  try {
+    const authHeader = req.header('Authorization');
+    const token = authHeader && authHeader.split(' ')[1];
+    const decodedToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const userId = decodedToken.data.userId;
+
+    if (!userId) {
+      return res.status(404).json({
+        success: false, message: "Invalid token!"
+      })
+    } else {
+      req.tokenDecode = decodedToken
+      next()
+    }
+  } catch (error) {
+    res.status(401).json({
+      error: new Error('Invalid request!'),
+    });
+  }
+}
+
 const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.header('Authorization');
@@ -61,4 +83,4 @@ const authorize = (useRoleArray) => {
   };
 };
 
-module.exports = { authorize, authenticate, verifyToken };
+module.exports = { authorize, authenticate, authenticateWithTokenOnly, verifyToken };

@@ -5,7 +5,7 @@ const User = require('../models/User');
 const baseUrl = process.env.HOST_URL + '/api/user/image/';
 
 const uploadUserImage = async (req, res) => {
-  const { id } = req.params;
+  const { data: { userId } } = req.tokenDecode
   try {
     await uploadFilesMiddleware(req, res);
 
@@ -15,7 +15,7 @@ const uploadUserImage = async (req, res) => {
       });
     }
 
-    await User.findByIdAndUpdate(id, {
+    await User.findByIdAndUpdate(userId, {
       profileImage: baseUrl + req.file.filename,
     });
 
