@@ -132,7 +132,7 @@ const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).populate('hub');
 
     if (!user) {
       return res.status(400).json({
@@ -154,31 +154,24 @@ const loginUser = async (req, res) => {
       expiresIn: 10 * 60 * 60,
     });
 
-    let userPayload = {};
+    let userPayload = {
+      username: user.username,
+      role: user.role,
+      profileImage: user.profileImage,
+    };
+
+    console.log(userPayload);
 
     if (user.role === 'customer') {
-      userPayload = {
-        username: user.username,
-        role: user.role,
-        name: user.name,
-        address: user.address,
-      };
+      userPayload.name = user.name;
+      userPayload.address = user.address;
     } else if (user.role === 'vendor') {
-      userPayload = {
-        username: user.username,
-        role: user.role,
-        businessName: user.businessName,
-        businessAddress: user.businessAddress,
-      };
+      userPayload.businessName = user.businessName;
+      userPayload.businessAddress = user.businessAddress;
     } else if (user.role === 'shipper') {
-      const shipper = await user.populate('hub');
-      userPayload = {
-        username: shipper.username,
-        role: shipper.role,
-        hub: {
-          name: shipper.hub.name,
-          address: shipper.hub.address,
-        },
+      userPayload.hub = {
+        name: user.hub.name,
+        address: user.hub.address,
       };
     }
 
@@ -201,7 +194,7 @@ const getProfile = async (req, res) => {
     data: { username },
   } = req.tokenDecode;
   try {
-    const user = await User.findOne({ username }).select("-password").populate("hub");
+    const user = await User.findOne({ username }).select('-password').populate('hub');
 
     if (!user) {
       res.status(404).json({
@@ -213,8 +206,8 @@ const getProfile = async (req, res) => {
     const userPayload = {
       username: user.username,
       role: user.role,
-      profileImage: user.profileImage || ""
-    }
+      profileImage: user.profileImage || '',
+    };
 
     switch (user.role) {
       case 'vendor':
@@ -230,8 +223,8 @@ const getProfile = async (req, res) => {
       case 'shipper':
         userPayload.hub = {
           name: user.hub.name,
-          address: user.hub.address
-        }
+          address: user.hub.address,
+        };
         break;
 
       default:
@@ -243,11 +236,10 @@ const getProfile = async (req, res) => {
       message: 'Get user successfully!',
       data: userPayload,
     });
-
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
-}
+};
 
 module.exports = { registerUser, loginUser, getProfile };
