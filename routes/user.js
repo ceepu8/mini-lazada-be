@@ -4,7 +4,6 @@ const { getImage } = require('../controller/upload');
 const { authenticate } = require('../middlewares/verifyToken');
 const userRouter = express.Router();
 
-userRouter.get('/');
 userRouter.get('/:id');
 userRouter.put('/:id');
 userRouter.post('/upload-image/:id', authenticate, uploadUserImage);

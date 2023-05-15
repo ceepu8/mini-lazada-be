@@ -149,7 +149,6 @@ const loginUser = async (req, res) => {
         message: 'Invalid username/ email or password',
       });
     }
-    console.log(user._id);
     const payload = { data: { userId: user._id, username, role: user.role } };
     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: 10 * 60 * 60,
@@ -197,4 +196,58 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const getProfile = async (req, res) => {
+  const {
+    data: { username },
+  } = req.tokenDecode;
+  try {
+    const user = await User.findOne({ username }).select("-password").populate("hub");
+
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: 'User not found!',
+      });
+    }
+
+    const userPayload = {
+      username: user.username,
+      role: user.role,
+      profileImage: user.profileImage || ""
+    }
+
+    switch (user.role) {
+      case 'vendor':
+        userPayload.businessAddress = user.businessAddress;
+        userPayload.businessName = user.businessName;
+        break;
+
+      case 'customer':
+        userPayload.address = user.address;
+        userPayload.name = user.name;
+        break;
+
+      case 'shipper':
+        userPayload.hub = {
+          name: user.hub.name,
+          address: user.hub.address
+        }
+        break;
+
+      default:
+        break;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Get user successfully!',
+      data: userPayload,
+    });
+
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}
+
+module.exports = { registerUser, loginUser, getProfile };
