@@ -33,6 +33,7 @@ const OrderSchema = new Schema({
     required: true,
     enum: ['active', 'delivered', 'canceled'],
   },
+  createdAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('orders', OrderSchema);
