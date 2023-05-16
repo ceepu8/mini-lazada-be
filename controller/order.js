@@ -41,6 +41,7 @@ const createOrder = async (req, res) => {
         address: order.hub.address,
       },
       totalPrice: order.totalPrice,
+      createdAt: order.createdAt,
     });
   } catch (error) {
     console.log(error.message);
@@ -89,6 +90,7 @@ const getOrderById = async (req, res) => {
           products: [...resProd],
           totalPrice: order.totalPrice,
           status: order.status,
+          createdAt: order.createdAt,
         },
         hub: {
           name: order.hub.name,
@@ -130,6 +132,7 @@ const getOrder = async (req, res) => {
       id: order.id,
       totalPrice: order.totalPrice,
       status: order.status,
+      createdAt: order.createdAt,
     }));
 
     return res.status(200).json({
