@@ -86,7 +86,7 @@ const getProductById = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
-  const { min, max } = req.query || {};
+  const { min, max, page = 1, limit = 10 } = req.query || {};
 
   let priceCondition = {};
   if (min && max && min >= 0 && max >= 0) {
@@ -96,8 +96,15 @@ const getAllProducts = async (req, res) => {
   }
 
   try {
-    let products = await Product.find({ ...priceCondition }).populate('vendor');
-    products = products.map((prod) => ({
+    const count = await Product.countDocuments({ ...priceCondition });
+    const totalPages = Math.ceil(count / limit);
+
+    const products = await Product.find({ ...priceCondition })
+      .populate('vendor')
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const formattedProducts = products.map((prod) => ({
       id: prod._id,
       name: prod.name,
       price: prod.price,
@@ -108,10 +115,17 @@ const getAllProducts = async (req, res) => {
         businessAddress: prod.vendor.businessAddress,
       },
     }));
-    if (products.length > 0) {
-      res.status(200).json({ success: true, message: 'Success', products });
+
+    if (formattedProducts.length > 0) {
+      res.status(200).json({
+        success: true,
+        message: 'Success',
+        totalPages,
+        currentPage: parseInt(page),
+        products: formattedProducts,
+      });
     } else {
-      res.status(404).json({ success: true, message: 'There is not any products' });
+      res.status(404).json({ success: true, message: 'There are no products' });
     }
   } catch (error) {
     console.log(error.message);
