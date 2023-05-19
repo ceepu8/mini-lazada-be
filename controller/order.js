@@ -109,42 +109,68 @@ const getOrder = async (req, res) => {
     data: { userId },
   } = req.tokenDecode;
 
+  let resOrder = [];
+
   try {
-    const user = await User.findById(userId).populate('hub');
+    const user = await User.findById(userId);
 
-    const ordersByHub = await Order.find({ hub: user.hub._id }).populate([
-      'customer',
-      'hub',
-      'products.productID',
-    ]);
+    if (user.role === 'shipper') {
+      user.populate('hub');
 
-    const resOrder = ordersByHub.map((order) => ({
-      customer: {
-        name: order.customer.name,
-        address: order.customer.address,
-      },
-      product: order.products.map((prod) => ({
-        name: prod.productID.name,
-        image: prod.productID.image,
-        price: prod.productID.price,
-        quantity: prod.quantity,
-      })),
-      id: order.id,
-      totalPrice: order.totalPrice,
-      status: order.status,
-      createdAt: order.createdAt,
-    }));
+      const ordersByHub = await Order.find({ hub: user.hub._id }).populate([
+        'customer',
+        'hub',
+        'products.productID',
+      ]);
+
+      resOrder = ordersByHub.map((order) => ({
+        customer: {
+          name: order.customer.name,
+          address: order.customer.address,
+        },
+        product: order.products.map((prod) => ({
+          name: prod.productID.name,
+          image: prod.productID.image,
+          price: prod.productID.price,
+          quantity: prod.quantity,
+        })),
+        id: order.id,
+        totalPrice: order.totalPrice,
+        status: order.status,
+        createdAt: order.createdAt,
+      }));
+    } else if (user.role === 'customer') {
+      const ordersByCustomer = await Order.find({ customer: userId }).populate([
+        'customer',
+        'hub',
+        'products.productID',
+      ]);
+      resOrder = ordersByCustomer.map((order) => ({
+        hub: {
+          name: order.hub.name,
+          address: order.hub.address,
+        },
+        customer: {
+          name: order.customer.name,
+          address: order.customer.address,
+        },
+        product: order.products.map((prod) => ({
+          name: prod.productID.name,
+          image: prod.productID.image,
+          price: prod.productID.price,
+          quantity: prod.quantity,
+        })),
+        id: order.id,
+        totalPrice: order.totalPrice,
+        status: order.status,
+        createdAt: order.createdAt,
+      }));
+    }
 
     return res.status(200).json({
       success: true,
-      message: 'Order created successfully!',
-      order: {
-        hub: {
-          name: user.hub.name,
-          address: user.hub.address,
-        },
-        order: resOrder,
-      },
+      message: 'Get orders created successfully!',
+      data: resOrder,
     });
   } catch (error) {
     console.log(error.message);
