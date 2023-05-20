@@ -70,13 +70,6 @@ const registerUser = async (req, res) => {
         businessAddress,
       } = req.body;
 
-      if (!vendorUsername.match(/^(?=.{8,15}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)) {
-        return res.status(404).json({
-          success: false,
-          message: 'Invalid username. Username must have 8-15 numbers and digits only!',
-        });
-      }
-
       try {
         const user = await Vendor.findOne({ vendorUsername });
         if (user) {
@@ -116,13 +109,6 @@ const registerUser = async (req, res) => {
         role: shipperRole,
         hub,
       } = req.body;
-
-      if (!shipperUsername.match(/^(?=.{8,15}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)) {
-        return res.status(404).json({
-          success: false,
-          message: 'Invalid username. Username must have 8-15 numbers and digits only!',
-        });
-      }
 
       try {
         const user = await Shipper.findOne({ shipperUsername });
