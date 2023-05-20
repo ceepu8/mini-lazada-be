@@ -8,9 +8,27 @@ const { Shipper } = require('../models/Shipper');
 const { Vendor } = require('../models/Vendor');
 
 const registerUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username.match(/^(?=.{8,15}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)) {
+    return res.status(404).json({
+      success: false,
+      message: 'Invalid username. Username must have 8-15 numbers and digits only!',
+    });
+  }
+
+  if (!password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)) {
+    return res.status(404).json({
+      success: false,
+      message:
+        'Invalid password. Password must have minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character:',
+    });
+  }
+
   switch (req.body.role) {
     case 'customer':
       const { username, password, role, address, name } = req.body;
+
       try {
         const user = await Customer.findOne({ username });
         if (user) {
@@ -52,6 +70,13 @@ const registerUser = async (req, res) => {
         businessAddress,
       } = req.body;
 
+      if (!vendorUsername.match(/^(?=.{8,15}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)) {
+        return res.status(404).json({
+          success: false,
+          message: 'Invalid username. Username must have 8-15 numbers and digits only!',
+        });
+      }
+
       try {
         const user = await Vendor.findOne({ vendorUsername });
         if (user) {
@@ -91,6 +116,13 @@ const registerUser = async (req, res) => {
         role: shipperRole,
         hub,
       } = req.body;
+
+      if (!shipperUsername.match(/^(?=.{8,15}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)) {
+        return res.status(404).json({
+          success: false,
+          message: 'Invalid username. Username must have 8-15 numbers and digits only!',
+        });
+      }
 
       try {
         const user = await Shipper.findOne({ shipperUsername });
