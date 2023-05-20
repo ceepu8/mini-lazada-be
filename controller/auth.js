@@ -71,8 +71,9 @@ const registerUser = async (req, res) => {
       } = req.body;
 
       try {
-        const user = await Vendor.findOne({ vendorUsername });
+        const user = await Vendor.findOne({ username: vendorUsername });
         if (user) {
+          console.log(user);
           return res.status(400).json({ success: false, message: 'Vendor has already existed!' });
         }
         const salt = bcryptjs.genSaltSync(10);
@@ -111,7 +112,7 @@ const registerUser = async (req, res) => {
       } = req.body;
 
       try {
-        const user = await Shipper.findOne({ shipperUsername });
+        const user = await Shipper.findOne({ username: shipperUsername });
         if (user) {
           return res.status(400).json({ success: false, message: 'Shipper has already existed!' });
         }
