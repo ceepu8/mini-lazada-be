@@ -9,6 +9,7 @@
 // Huynh Bao Khang – s3911723
 // Hoang Minh Khoi – s3854233
 //  Acknowledgement: In the document
+
 const USER_ENUM = ['SHIPPER', 'VENDOR', 'CUSTOMER'];
 
 module.exports = { USER_ENUM };
