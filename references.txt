@@ -27,3 +27,6 @@ $gt: greater than
 $lt: less than
 $lte: less than or equal to
 $ne: not equal to
+
+9. Regex for username
+https://stackoverflow.com/questions/12018245/regular-expression-to-validate-username
